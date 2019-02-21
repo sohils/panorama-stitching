@@ -93,24 +93,3 @@ def ransacH(matches, locs1, locs2, num_iter=5000, tol=2):
             bestinliers = inliers_pts
     
     return bestH,matches[bestinliers.flatten()]
-        
-    
-
-if __name__ == '__main__':
-    im1 = cv2.imread('data_proj/dinoR0023.png')
-    im2 = cv2.imread('data_proj/dinoR0024.png')
-    locs1, desc1 = briefLite(im1)
-    locs2, desc2 = briefLite(im2)
-    np.save("output/dinoR0023.npz",locs1,desc1)
-    np.save("output/dinoR0024.npz",locs2,desc2)
-    # i1 = np.load("output/dinoR0023.npz")
-    # i2 = np.load("output/dinoR0024.npz")
-    # locs1 = i1['locs1']
-    # desc1 = i1['desc1']
-    # locs2 = i2['locs2']
-    # desc2 = i2['desc2']
-    matches = briefMatch(desc1, desc2)
-    bestH,Rmatch = ransacH(matches, locs1, locs2, num_iter=5000, tol=2)
-    plotMatches(im1,im2,Rmatch,locs1,locs2)
-    # print(bestH)
-

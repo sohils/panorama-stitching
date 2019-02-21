@@ -1,7 +1,11 @@
+import argparse
+
+import math
 import cv2
 import numpy as np
-import math
+
 from scipy.ndimage.morphology import distance_transform_edt
+
 from planarH import ransacH
 from BRIEF import briefLite,briefMatch,plotMatches
 
@@ -120,22 +124,31 @@ def generatePanorama(im1, im2):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-if __name__ == '__main__':
-    im1 = cv2.imread('../data/incline_L.png')
-    im2 = cv2.imread('../data/incline_R.png')
+def main(args):
+    im1 = cv2.imread(args.im1)
+    im2 = cv2.imread(args.im2)
+
+    # Compute BREIF descriptors
     locs1, desc1 = briefLite(im1)
     locs2, desc2 = briefLite(im2)
+
+    # Match descriptors
     matches = briefMatch(desc1, desc2)
-    print(locs1.shape, locs2.shape, matches.shape)
-    # plotMatches(im1,im2,matches,locs1,locs2)
-    H2to1 = ransacH(matches, locs1, locs2, num_iter=5000, tol=2)
-    np.save("../results/H2to1",H2to1)
-    H2to1 = np.load("../results/H2to1_2.npy")
-    # pano_im = imageStitching(im1, im2, H2to1)
-    pano_im = imageStitching_noClip(im1, im2, H2to1)
     
-    print(H2to1)
+    # Estimate best Homogrpahy H
+    H2to1,_ = ransacH(matches, locs1, locs2, num_iter=5000, tol=2)
+    
+    # Stitch images together
+    pano_im = imageStitching_noClip(im1, im2, H2to1)
+
+    # Save and show
     cv2.imwrite('../results/panoImg.jpg', pano_im)
-    cv2.imshow('panoramas', pano_im)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--im1", dest="im1",
+                    help="Path of image 1", default="../data/incline_L.png")
+    parser.add_argument("-j", "--im2", dest="im2",
+                    help="Path of image 2", default="../data/incline_R.png")
+    args = parser.parse_args()
+    main(args)

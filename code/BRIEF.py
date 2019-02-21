@@ -178,26 +178,3 @@ def plotMatches(im1, im2, matches, locs1, locs2):
         plt.plot(x,y,'r',linewidth=0.5)
         plt.plot(x,y,'g.',linewidth=0.5)
     plt.show()
-    
-    
-
-if __name__ == '__main__':
-    # test makeTestPattern
-    compareX, compareY = makeTestPattern()
-    # # test briefLite
-    # # im = cv2.imread('../data/model_chickenbroth.jpg')
-    # # locs, desc = briefLite(im)  
-    # # fig = plt.figure()q2_
-    # # plt.imshow(cv2.cvtColor(im, cv2.COLOR_BGR2GRAY), cmap='gray')
-    # # plt.plot(locs[:,0], locs[:,1], 'r.')
-    # # plt.draw()
-    # # plt.waitforbuttonpress(0)
-    # # plt.close(fig)
-    # # test matches
-    im1 = cv2.imread('../data_proj/dinoR0023.png')
-    im2 = cv2.imread('../data_proj/dinoR0024.png')
-    print(im1.shape,im2.shape)
-    locs1, desc1 = briefLite(im1)
-    locs2, desc2 = briefLite(im2)
-    matches = briefMatch(desc1, desc2)
-    plotMatches(im1,im2,matches,locs1,locs2)
